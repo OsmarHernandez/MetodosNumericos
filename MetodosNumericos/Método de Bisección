@@ -1,0 +1,52 @@
+#include <iostream>
+#include <iomanip> //setprecision
+#include <cmath>
+#define PRECISION 6
+using namespace std;
+
+void tabula(double dA, double dB);
+double dF(double dX);
+int iIntervalos;
+int main()
+{
+    cout<< setprecision(PRECISION);
+    cout<<"Método de Bisección";
+    cout<<"\n Ingrese el intervalo inicial[a,b]:" << endl;
+    
+    double dA, dB, dTolerancia;
+    cout << "a= ";
+    cin >> dA;
+    
+    cout << "b= ";
+    cin >> dB;
+    
+    cout <<"Intervalos= ";
+    cin >> iIntervalos;
+    
+    tabula(dA, dB);
+    
+    cin.get();
+    cin.get();
+    return 0;
+}
+
+    void tabula(double dA, double dB)
+        {
+        int iPuntos = iIntervalos + 1;
+        
+        double dAncho = (dB-dA)/ iIntervalos;
+        
+        cout<< "\n\tx\tf(x) " <<endl; 
+        for(int iI = 0; iI < iPuntos; iI++) {
+            cout << "\t" << dA << "\t" << dF(dA) << endl;
+            dA = dA + dAncho;
+        }
+}
+
+//AQUI VA LA FUNCION A EVALUAR//
+//LO DE ACONTINUACIÓN ES UN EJEMPLO//
+
+ double dF(double dX)
+ {
+   return exp(-1 * dX) - cos(3 * dX) - .5;    
+ }
