@@ -1,11 +1,30 @@
 #include "Evaluables.h"
 
 int main(void){
+    int metodo, n;
+    double a, b;
     Funcion func;
     func.init();
     func.print();
-    cout <<	"Tu funcion evaluada en 10 es: "
-    	 << func.eval(10) << endl;
+    cout << "a: ";
+    cin >> a;
+    cout << "b: ";
+    cin >> b;
+    cout << "n: ";
+    cin >> n;
+    cout <<	"Selecciona un metodo: " << endl
+         << "\t1) Trapecio" << endl
+         << "\t2) Simpson" << endl;
+    cin >> metodo;
+    switch(metodo){
+        case 1:
+            cout << func.trapecio(a, b, n);
+            break;
+        case 2:
+            cout << func.simpson(a, b, n);
+            break;
+    }
+    cout << endl;
 
     return 0;
 }

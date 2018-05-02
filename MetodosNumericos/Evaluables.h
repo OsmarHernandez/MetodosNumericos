@@ -47,12 +47,16 @@ class Polinomio : public Expresion{
 class Funcion{
     private:
         Polinomio* expr;
+        double simpson13(double a, double b, int n);
+        double simpson38(double a, double b);
     public:
         Funcion() { expr = NULL; }
         ~Funcion() { delete expr; }
         double eval(double x);
         void print(Expresion* input = NULL, int index = 0);
         void init();
+        double trapecio(double a, double b, int n);
+        double simpson(double a, double b, int n);
 };
 
 class Producto : public Expresion{
@@ -550,4 +554,46 @@ void Logaritmo::init(Funcion* func){
 	func->print(this, 1);
 	param = select();
 	param->init(func);
+}
+
+double Funcion::trapecio(double a, double b, int n){
+    double h = (b - a) / n;
+    double sol = 0;
+    sol += eval(a);
+    for(int i = 1; i < n; i++)
+        sol += 2 * eval( a + i * h );
+    sol += eval(n);
+    sol *= h / 2;
+    return sol;
+}
+
+double Funcion::simpson13(double a, double b, int n){
+    double h = (b - a) / n;
+    double sol = 0;
+    sol += eval(a);
+    for(int i = 1; i < n; i++)
+        sol += (i%2 ? 4 : 2) * eval( a + i * h );
+    sol += eval(n);
+    sol *= h / 3;
+    return sol;
+}
+
+double Funcion::simpson38(double a, double b){
+    double h = (b - a) / 3;
+    double sol = 0;
+    sol += eval(a) + eval(b);
+    sol += 3 * (eval(a + h) + eval(b - h));
+    sol *= (b - a) / 8;
+    return sol;
+}
+
+double Funcion::simpson(double a, double b, int n){
+    double sol;
+    double h = (b - a) / n ;
+    // Por el momento hace puro S-1/3 o un S-3/8 y el resto S-1/3
+    if(n % 2)
+        sol = simpson13(a, b - 3 * h, n-3) + simpson38(b - 3 * h, b);
+    else
+        sol = simpson13(a, b, n);
+    return sol;
 }
