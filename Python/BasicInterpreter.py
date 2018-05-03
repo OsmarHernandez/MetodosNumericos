@@ -44,7 +44,7 @@ def x(x):
 def e(x):
     return math.e
 
-def suma(f, g):
+def add(f, g):
     def func(x):
         return f(x) + g(x)
     return func
@@ -241,12 +241,18 @@ class Interpreter(object):
             token = self.current_token
             if token.type == PLUS:
                 self.eat(PLUS)
-                result = suma(result, self.term())
+                result = add(result, self.term())
             elif token.type == MINUS:
                 self.eat(MINUS)
                 result = subs(result, self.term())
 
         return result
+
+def parse(s):
+    lex = Lexer(s)
+    interp = Interpreter(lex)
+    res = interp.expr()
+    return res
 
 ######################### INTEGRACION NUMERICA #########################
 # Trapezoidal con aplicacion multiple
@@ -332,7 +338,6 @@ def print_mat(mat):
         print mat[i]
     print "--"
 
-# Montante
 def montante(mat):
     last_pivot = 1
     for k in range(len(mat)):
@@ -380,9 +385,12 @@ def lagrange(ax, ay):
 
 
 ######################## AJUSTE DE CURVAS #########################
+arreglo_x = [.75, 2, 3, 4, 6, 8, 8.5]
+arreglo_y = [1.2, 1.95, 2, 2.4, 2.4, 2.7, 2.6]
+
 # Regresion Lineal
 def regresionLineal(x, y):
-    x_squared = map(lambda x: pow(x,2), x)
+    x_squared = map(lambda x: x ** 2, x)
     x_times_y = [a*b for a,b in zip(x, y)]
     
     first_row = [len(x), sum(x), sum(y)]
@@ -408,7 +416,7 @@ def regresionPotencial(x, y):
 
 # Regresion Exponencial
 def regresionExponencial(x, y):
-    x_squared = map(lambda x: pow(x,2), x)
+    x_squared = map(lambda x: x ** 2, x)
     ln_y_arr = map(lambda y: math.log(y), y)
     lny_times_x = [a*b for a,b in zip(ln_y_arr, x)]
     
@@ -419,13 +427,25 @@ def regresionExponencial(x, y):
     
     return montante(matrix)
 
+# Regresion Parabola
+def regresionParabola(x, y, n):
+    x_arr = []
+    y_arr = []
+    x_times_y = [a*b for a,b in zip(x, y)]
+    
+    for i in range(1, n+2):
+        i_arr = map(lambda x: x ** i, x)
+        x_arr.append(i_arr)
 
-def parse(s):
-    lex = Lexer(s)
-    interp = Interpreter(lex)
-    res = interp.expr()
-    return res
-
+    for j in range(1, n):
+        j_arr = [a*b for a,b in zip(y, x_arr[j-1])]
+        y_arr.append(j_arr)
+    
+    matrix = [[len(x), sum(x_arr[0]), sum(x_arr[1]), sum(y)]]
+    for k in range(1, n):
+        matrix.append([sum(x_arr[k-1]), sum(x_arr[k]), sum(x_arr[k+1]), sum(y_arr[k-1])])
+    
+    return montante(matrix)
 
 ############################### MAIN #############################
 def main():
@@ -445,10 +465,14 @@ def main():
         lexer = Lexer(text)
         interpreter = Interpreter(lexer)
         result = interpreter.expr()
-        # print bisect(result, int(aval), int(bval), int(iterval), float(thresval))
         print der(result, 0)
         print result(1)
 
+        print "** Regresion **"
+        print regresionLineal(arreglo_x, arreglo_y)
+        print regresionPotencial(arreglo_x, arreglo_y)
+        print regresionExponencial(arreglo_x, arreglo_y)
+        print regresionParabola(arreglo_x, arreglo_y, 3)
 
 if __name__ == '__main__':
     main()
