@@ -322,7 +322,29 @@ def montante(mat):
     last_column = len(mat[0])-1
     for x in range(len(mat)):
         results.append(float(mat[x][last_column])/float(mat[x][x]))
-    return results
+    return 
+
+
+####################### INTERPOLACION ###########################
+
+def lagrange(ax, ay):
+    n = len(ax)
+    suma = const(0)
+    for i in range(n):
+        term = const(ay[i])
+        for j in range(n):
+            if i != j:
+                xi = const(ax[i])
+                xj = const(ax[j])
+                term = mult(term, div(subs(x, xj), subs(xi,xj)))
+        suma = sum(suma, term)
+    return suma 
+
+
+# def newton(ax,ay):
+#     fdd = []
+#     for i in range(n)
+
 
 ######################## AJUSTE DE CURVAS #########################
 # Regresion Lineal
