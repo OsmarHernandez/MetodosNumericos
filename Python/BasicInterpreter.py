@@ -375,7 +375,7 @@ def lagrange(ax, ay):
                 xi = const(ax[i])
                 xj = const(ax[j])
                 term = mult(term, div(subs(x, xj), subs(xi,xj)))
-        suma = suma(suma, term)
+        suma = add(suma, term)
     return suma 
 
 
