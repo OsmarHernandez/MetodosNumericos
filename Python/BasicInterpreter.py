@@ -44,7 +44,7 @@ def x(x):
 def e(x):
     return math.e
 
-def sum(f, g):
+def suma(f, g):
     def func(x):
         return f(x) + g(x)
     return func
@@ -241,7 +241,7 @@ class Interpreter(object):
             token = self.current_token
             if token.type == PLUS:
                 self.eat(PLUS)
-                result = sum(result, self.term())
+                result = suma(result, self.term())
             elif token.type == MINUS:
                 self.eat(MINUS)
                 result = subs(result, self.term())
@@ -250,12 +250,33 @@ class Interpreter(object):
 
 ######################### INTEGRACION NUMERICA #########################
 # Trapezoidal con aplicacion multiple
-def trapezoidalMultiple(a, h, n, f):
+def trapezoidal(a, b, n, f):
+    h = (b-a)/float(n)
     sum = f(a)
-    for i in range(1, n-1):
+    for i in range(1, n):
         sum = sum + 2 * f(a + i * h)
-    sum = sum + f(n)
+    sum = sum + f(a+n*h)
     return h * sum / 2
+
+def simpson(a, b, n, f):
+    if(n < 2):
+        return "Error: Intervalos insuficientes"
+    def simp13(a,h,n,f):
+        sum = f(a)
+        for i in range(1, n-2, 2):
+            sum += 4 * f(a+i*h) + 2 * f(a+(i+1)*h)
+        sum += 4 * f(a+(n-1)*h) + f(a+n*h) 
+        return h * sum / 3
+    def simp38(a,h,f):
+        return 3 * h * (f(a)+3*(f(a+h)+f(a+2*h)+f(a+3*h))) / 8
+    h = (b-a)/float(n)
+    if(n%2):
+        return simp13(a,h,n-3,f) + simp38(b-h*3, h, f)
+    else:
+        return simp13(a, h, n, f)
+
+
+
 
 ######################### RAICES #########################
 
@@ -283,14 +304,26 @@ def secante(f, ai, a, n):
         af = a - f(a)*((ai-a)/(f(ai)-f(a)))
         ai = a
         a = af
+        if(ai == af):
+            return af
     return af
 
-# Derivada
-def der(f, x):
-    h = 0.000000000001
-    val1 = (f(x+h)-f(x))/h
-    val2 = (f(x-h)-f(x))/-h
-    return (val1+val2)/2
+# Newton Raphson
+def newton_raphson(func, x0, iterations, threshval):
+    # Derivada
+    def der(f, x):
+        h = 0.000000000001
+        val1 = (f(x+h)-f(x))/h
+        val2 = (f(x-h)-f(x))/-h
+        return (val1+val2)/2
+
+    for i in range(iterations):
+        xi = x0 - (func(x0)/der(func, x0))
+        if ((xi - x0)/(xi + x0))*100 < threshval:
+            return xi
+        x0 = xi
+    return xi
+
 
 ######################## SISTEMAS DE ECUACIONES #########################
 
@@ -322,7 +355,7 @@ def montante(mat):
     last_column = len(mat[0])-1
     for x in range(len(mat)):
         results.append(float(mat[x][last_column])/float(mat[x][x]))
-    return 
+    return results
 
 
 ####################### INTERPOLACION ###########################
@@ -337,7 +370,7 @@ def lagrange(ax, ay):
                 xi = const(ax[i])
                 xj = const(ax[j])
                 term = mult(term, div(subs(x, xj), subs(xi,xj)))
-        suma = sum(suma, term)
+        suma = suma(suma, term)
     return suma 
 
 
@@ -385,6 +418,14 @@ def regresionExponencial(x, y):
     matrix = [first_row, second_row]
     
     return montante(matrix)
+
+
+def parse(s):
+    lex = Lexer(s)
+    interp = Interpreter(lex)
+    res = interp.expr()
+    return res
+
 
 ############################### MAIN #############################
 def main():
