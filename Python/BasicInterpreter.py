@@ -249,6 +249,8 @@ class Interpreter(object):
         return result
 
 
+######################### RAICES #########################
+
 def samesign(a,b):
     return a * b > 0
 
@@ -271,6 +273,42 @@ def der(f, x):
     val1 = (f(x+h)-f(x))/h
     val2 = (f(x-h)-f(x))/-h
     return (val1+val2)/2
+
+######################## SISTEMAS DE ECUACIONES #########################
+
+def print_mat(mat):
+    for i in range(len(mat)):
+        print mat[i]
+    print "--"
+
+def montante(mat):
+    last_pivot = 1
+    for k in range(len(mat)):
+        #Transforma el arreglo para el pivote
+        for i in range(len(mat)):
+            if(i != k):
+                for j in range(k+1, len(mat[0])):
+                    mat[i][j] = (mat[k][k]*mat[i][j]-(mat[k][j]*mat[i][k]))/last_pivot
+        # Llenar columna del pivote con 0s
+        for i in range(len(mat)):
+            if(i != k):
+                mat[i][k] = 0
+        # Cambiar pivote anterior por actual
+        for p in range(k):
+            mat[p][p] = mat[k][k]
+        # Actualizar pivote anterior
+        last_pivot = mat[k][k]
+    # Guarda los valores resultantes en un arreglo
+    results = []
+    last_column = len(mat[0])-1
+    for x in range(len(mat)):
+        results.append(float(mat[x][last_column])/float(mat[x][x]))
+    return results
+
+
+
+
+############################### MAIN #############################
 
 def main():
     while True:
