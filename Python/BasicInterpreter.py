@@ -299,6 +299,7 @@ def print_mat(mat):
         print mat[i]
     print "--"
 
+# Montante
 def montante(mat):
     last_pivot = 1
     for k in range(len(mat)):
@@ -323,8 +324,25 @@ def montante(mat):
         results.append(float(mat[x][last_column])/float(mat[x][x]))
     return results
 
-############################### MAIN #############################
+######################## AJUSTE DE CURVAS #########################
+# Regresion Potencial
+def regresionPotencial(x, y):
+    n_elements = len(x)
+    sum_of_x = sum(x)
+    sum_of_y = sum(y)
+    ln_x_arr = map(lambda x: math.log(x), x)
+    ln_y_arr = map(lambda y: math.log(y), y)
+    ln_x_squared = map(lambda x: x ** 2, ln_x_arr)
+    lnx_times_lny = [a*b for a,b in zip(ln_x_arr, ln_y_arr)]
+    
+    first_row = [len(x), sum(ln_x_arr), sum(ln_y_arr)]
+    second_row = [sum(ln_x_arr), sum(ln_x_squared), sum(lnx_times_lny)]
+    
+    matrix = [first_row, second_row]
+    
+    print montante(matrix)
 
+############################### MAIN #############################
 def main():
     while True:
         try:
