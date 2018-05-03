@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
 import math
 
 # Token types
@@ -268,6 +273,8 @@ def simpson(a, b, n, f):
     if(n < 2):
         return "Error: Intervalos insuficientes"
     def simp13(a,h,n,f):
+        if n == 0:
+            return 0
         sum = f(a)
         for i in range(1, n-2, 2):
             sum += 4 * f(a+i*h) + 2 * f(a+(i+1)*h)
@@ -362,6 +369,80 @@ def montante(mat):
         results.append(float(mat[x][last_column])/float(mat[x][x]))
     return results
 
+def Gauss_Jordan(m, n):
+    #Encuentra valor mayor
+    for i in range(0, n):
+        maxEl = abs(m[i][i])
+        maxRow = i
+        for k in range(i+1, n):
+            if abs(m[k][i]) > maxEl:
+                maxEl = abs(m[k][i])
+                maxRow = k
+            #Cambia mayor valor por columna actual
+        for k in range(i, n):
+            tmp = m[maxRow][k]
+            m[maxRow][k] = m[i][k]
+            m[i][k] = tmp
+
+    #Despejamos pivotes
+    for q in range(0, n):
+        #Despejamos debajo del pivote
+        r = m[q][q]
+        for j in range(q+1, n):
+            t = float(m[j][q])
+            s = -(t/r)
+            for h in range(0, n):
+                y1 = (m[q][h])*s + m[j][h]
+                m[j][h] = y1
+
+
+
+    for i in range(0, n):
+        if m[i][i] > 0:
+            r = float(m[i][i])
+            for j in range(0, n):
+                x = (m[i][j])/r
+                m[i][j] = x
+
+    for i in range(1,n):
+        if m[i][i] != 0:
+            r = m[i][i]
+
+            for j in range(0, i):
+                t = float(m[j][i])
+                print 'El valor de t es: ' + str(t)
+                s = -(t/r)
+                print 'El valor de s es: ' + str(s)
+                for h in range(i, n):
+                    print 'El valor de m[i][h] es: ' + str(m[i][h])
+                    print 'El valor de m[j][h] es: ' + str(m[j][h])
+                    y1 = (m[i][h])*s + m[j][h]
+                    print 'El valor de y1 es: ' + str(y1)
+                    m[j][h] = y1
+
+    for x in range(n):
+        for y in range(n):
+            if m[x][y]<0.00000001 and m[x][y] > -.000000000001:
+                m[x][y] = 0
+
+    print 'La matriz resultante es: '
+    for x in range(n):
+        line = ""
+        for y in range(n):
+            line += str(m[x][y])
+            line += " "
+        print(line)
+
+    x = [0 for i in range(n)]
+    for i in range(n):
+        if m[i][i] > 0:
+            x[i] = m[i][n-1]
+
+
+    print 'El resultado es: '
+    for i in range(len(x)):
+        if x[i] != 0:
+         print str(x[i])
 
 ####################### INTERPOLACION ###########################
 
@@ -379,100 +460,99 @@ def lagrange(ax, ay):
     return suma 
 
 
-# def newton(ax,ay):
-#     fdd = []
-#     for i in range(n)
+def newton(ax,ay):
+    fdd = []
+    for i in range(len(ax)):
+        fdd.append([ax[i]])
+        fdd[i].append(ay[i])
+        for j in range(1,len(ax)):
+            fdd[i].append(0)
+    for j in range(2,len(ax)+1):
+        for i in range(j-1, len(ax)):
+            fdd[i][j] = (fdd[i][j-1] - fdd[i-1][j-1]) / (float(fdd[i][0]) - fdd[i-(j-1)][0])
+    func = const(0)
+    for i in range (len(ax)):
+        term = const(fdd[i][i+1])
+        for k in range(i):
+            term = mult(term,subs(x,const(ax[k])))
+        func = add(func, term)
+    return func
+
 
 
 ######################## AJUSTE DE CURVAS #########################
-arreglo_x = [.75, 2, 3, 4, 6, 8, 8.5]
-arreglo_y = [1.2, 1.95, 2, 2.4, 2.4, 2.7, 2.6]
+# arreglo_x = [.75, 2, 3, 4, 6, 8, 8.5]
+# arreglo_y = [1.2, 1.95, 2, 2.4, 2.4, 2.7, 2.6]
 
 # Regresion Lineal
-def regresionLineal(x, y):
-    x_squared = map(lambda x: x ** 2, x)
-    x_times_y = [a*b for a,b in zip(x, y)]
-    
-    first_row = [len(x), sum(x), sum(y)]
-    second_row = [sum(x), sum(x_squared), sum(x_times_y)]
-    
+def regresion_lineal(z, y):
+    x_squared = map(lambda x: x ** 2, z)
+    x_times_y = [a*b for a,b in zip(z, y)]
+    first_row = [len(z), sum(z), sum(y)]
+    second_row = [sum(z), sum(x_squared), sum(x_times_y)]
     matrix = [first_row, second_row]
-    
-    return montante(matrix)
+    a = montante(matrix)
+    return add(const(a[0]),mult(const(a[1]), x))
 
 # Regresion Potencial
-def regresionPotencial(x, y):
-    ln_x_arr = map(lambda x: math.log(x), x)
+def regresion_potencial(z, y):
+    ln_x_arr = map(lambda x: math.log(x), z)
     ln_y_arr = map(lambda y: math.log(y), y)
     ln_x_squared = map(lambda x: x ** 2, ln_x_arr)
     lnx_times_lny = [a*b for a,b in zip(ln_x_arr, ln_y_arr)]
-    
-    first_row = [len(x), sum(ln_x_arr), sum(ln_y_arr)]
+    first_row = [len(z), sum(ln_x_arr), sum(ln_y_arr)]
     second_row = [sum(ln_x_arr), sum(ln_x_squared), sum(lnx_times_lny)]
-    
     matrix = [first_row, second_row]
-    
-    return montante(matrix)
+    a = montante(matrix)
+    return mult(pow(e,const(a[0])),pow(x,const(a[1])))
 
 # Regresion Exponencial
-def regresionExponencial(x, y):
-    x_squared = map(lambda x: x ** 2, x)
+def regresion_exponencial(z, y):
+    x_squared = map(lambda x: x ** 2, z)
     ln_y_arr = map(lambda y: math.log(y), y)
-    lny_times_x = [a*b for a,b in zip(ln_y_arr, x)]
-    
-    first_row = [len(x), sum(x), sum(ln_y_arr)]
-    second_row = [sum(x), sum(x_squared), sum(lny_times_x)]
-    
+    lny_times_x = [a*b for a,b in zip(ln_y_arr, z)]
+    first_row = [len(z), sum(z), sum(ln_y_arr)]
+    second_row = [sum(z), sum(x_squared), sum(lny_times_x)]
     matrix = [first_row, second_row]
-    
-    return montante(matrix)
+    a = montante(matrix)
+    return mult(pow(e,const(a[0])),pow(e,mult(const(a[1]),x)))
 
-# Regresion Parabola
-def regresionParabola(x, y, n):
+# Regrsion Polinomial
+def regresion_polinomial(z, y, n):
     x_arr = []
     y_arr = []
-    x_times_y = [a*b for a,b in zip(x, y)]
+    matrix = []
+    xsum_arr = []
     
-    for i in range(1, n+2):
-        i_arr = map(lambda x: x ** i, x)
+    for i in range(2*n+1):
+        i_arr = map(lambda x: x ** i, z)
         x_arr.append(i_arr)
+        xsum_arr.append(sum(i_arr))
 
-    for j in range(1, n):
-        j_arr = [a*b for a,b in zip(y, x_arr[j-1])]
+    for j in range(n+1):
+        j_arr = [a*b for a,b in zip(y, x_arr[j])]
         y_arr.append(j_arr)
-    
-    matrix = [[len(x), sum(x_arr[0]), sum(x_arr[1]), sum(y)]]
-    for k in range(1, n):
-        matrix.append([sum(x_arr[k-1]), sum(x_arr[k]), sum(x_arr[k+1]), sum(y_arr[k-1])])
-    
-    return montante(matrix)
+
+    for i in range(n+1):
+        matrix.append([xsum_arr[i]])
+        for j in range(1,n+1):
+            matrix[i].append(xsum_arr[i+j])
+        matrix[i].append(sum(y_arr[i]))
+    a = montante(matrix)
+    res = const(0)
+    for i in range(len(a)):
+        res = add(res, mult(const(a[i]), pow(x, const(i))))
+    return res
+
 
 ############################### MAIN #############################
 def main():
-    while True:
-        try:
-            # To run under Python3 replace 'raw_input' call
-            # with 'input'
-            text = raw_input('f(x): ')
-            # aval = raw_input('a = ')
-            # bval = raw_input('b = ')
-            # iterval = raw_input('iterations: ')
-            # thresval = raw_input('threshold: ')
-        except EOFError:
-            break
-        if not text:
-            continue
-        lexer = Lexer(text)
-        interpreter = Interpreter(lexer)
-        result = interpreter.expr()
-        print der(result, 0)
-        print result(1)
-
-        print "** Regresion **"
-        print regresionLineal(arreglo_x, arreglo_y)
-        print regresionPotencial(arreglo_x, arreglo_y)
-        print regresionExponencial(arreglo_x, arreglo_y)
-        print regresionParabola(arreglo_x, arreglo_y, 3)
+    def menu(st):
+    return {
+        1 : 'output for case 1',
+        2 : 'output for case 2',
+        3 : 'output for case 3'
+    }.get(st, 'default case')   
 
 if __name__ == '__main__':
     main()
