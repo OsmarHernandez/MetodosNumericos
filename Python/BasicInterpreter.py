@@ -248,12 +248,21 @@ class Interpreter(object):
 
         return result
 
+######################### INTEGRACION NUMERICA #########################
+# Trapezoidal con aplicacion multiple
+def trapezoidalMultiple(a, h, n, f):
+    sum = f(a)
+    for i in range(1, n-1):
+        sum = sum + 2 * f(a + i * h)
+    sum = sum + f(n)
+    return h * sum / 2
 
 ######################### RAICES #########################
 
 def samesign(a,b):
     return a * b > 0
 
+# Biseccion
 def bisect(func, low, high, iterations, threshold):
     assert not samesign(func(low), func(high))
 
@@ -268,6 +277,15 @@ def bisect(func, low, high, iterations, threshold):
             high = midpoint
     return midpoint
 
+# Secante
+def secante(f, ai, a, n):
+    for i in range(a, n+1):
+        af = a - f(a)*((ai-a)/(f(ai)-f(a)))
+        ai = a
+        a = af
+    return af
+
+# Derivada
 def der(f, x):
     h = 0.000000000001
     val1 = (f(x+h)-f(x))/h
@@ -281,6 +299,7 @@ def print_mat(mat):
         print mat[i]
     print "--"
 
+# Montante
 def montante(mat):
     last_pivot = 1
     for k in range(len(mat)):
@@ -327,9 +346,34 @@ def lagrange(ax, ay):
 #     for i in range(n)
 
 
+######################## AJUSTE DE CURVAS #########################
+# Regresion Lineal
+def regresionLineal(x, y):
+    x_squared = map(lambda x: pow(x,2), x)
+    x_times_y = [a*b for a,b in zip(x, y)]
+    
+    first_row = [len(x), sum(x), sum(y)]
+    second_row = [sum(x), sum(x_squared), sum(x_times_y)]
+    
+    matrix = [first_row, second_row]
+    
+    return montante(matrix)
+
+# Regresion Potencial
+def regresionPotencial(x, y):
+    ln_x_arr = map(lambda x: math.log(x), x)
+    ln_y_arr = map(lambda y: math.log(y), y)
+    ln_x_squared = map(lambda x: x ** 2, ln_x_arr)
+    lnx_times_lny = [a*b for a,b in zip(ln_x_arr, ln_y_arr)]
+    
+    first_row = [len(x), sum(ln_x_arr), sum(ln_y_arr)]
+    second_row = [sum(ln_x_arr), sum(ln_x_squared), sum(lnx_times_lny)]
+    
+    matrix = [first_row, second_row]
+    
+    return montante(matrix)
 
 ############################### MAIN #############################
-
 def main():
     while True:
         try:
