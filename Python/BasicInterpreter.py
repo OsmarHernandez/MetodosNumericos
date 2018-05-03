@@ -351,6 +351,19 @@ def regresionPotencial(x, y):
     
     return montante(matrix)
 
+# Regresion Exponencial
+def regresionExponencial(x, y):
+    x_squared = map(lambda x: pow(x,2), x)
+    ln_y_arr = map(lambda y: math.log(y), y)
+    lny_times_x = [a*b for a,b in zip(ln_y_arr, x)]
+    
+    first_row = [len(x), sum(x), sum(ln_y_arr)]
+    second_row = [sum(x), sum(x_squared), sum(lny_times_x)]
+    
+    matrix = [first_row, second_row]
+    
+    return montante(matrix)
+
 ############################### MAIN #############################
 def main():
     while True:
