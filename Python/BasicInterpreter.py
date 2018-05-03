@@ -325,11 +325,20 @@ def montante(mat):
     return results
 
 ######################## AJUSTE DE CURVAS #########################
+# Regresion Lineal
+def regresionLineal(x, y):
+    x_squared = map(lambda x: pow(x,2), x)
+    x_times_y = [a*b for a,b in zip(x, y)]
+    
+    first_row = [len(x), sum(x), sum(y)]
+    second_row = [sum(x), sum(x_squared), sum(x_times_y)]
+    
+    matrix = [first_row, second_row]
+    
+    return montante(matrix)
+
 # Regresion Potencial
 def regresionPotencial(x, y):
-    n_elements = len(x)
-    sum_of_x = sum(x)
-    sum_of_y = sum(y)
     ln_x_arr = map(lambda x: math.log(x), x)
     ln_y_arr = map(lambda y: math.log(y), y)
     ln_x_squared = map(lambda x: x ** 2, ln_x_arr)
@@ -340,7 +349,7 @@ def regresionPotencial(x, y):
     
     matrix = [first_row, second_row]
     
-    print montante(matrix)
+    return montante(matrix)
 
 ############################### MAIN #############################
 def main():
