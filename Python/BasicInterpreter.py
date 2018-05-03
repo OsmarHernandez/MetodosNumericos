@@ -39,43 +39,56 @@ class Token(object):
 ######### FUNCTIONS ##############################################################
 ##################################################################################
 def const(a):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return str(a)
         return a
     return func
 
-def x(x):
+def x(x=None):
+    if(x==None):
+        return 'x'
     return x
 
-def e(x):
+def e(x=None):
+    if(x==None):
+        return 'e'
     return math.e
 
 def add(f, g):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return '(' + f() + '+' + g() + ')'
         return f(x) + g(x)
     return func
 
 def subs(f, g):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return '(' + f() + '-' + g() + ')'
         return f(x) - g(x)
     return func
 
 def mult(f, g):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return '(' + f() + '*' + g() + ')'
         return f(x) * g(x)
     return func
 
 def div(f, g):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return '(' + f() + '/' + g() + ')'
         return f(x) / g(x)
     return func
 
 def pow(f, g):
-    def func(x):
+    def func(x=None):
+        if(x==None):
+            return f() + '^' + g()
         return math.pow(f(x), g(x))
     return func
-
-#def e(x):
-#    return math.e
 
 ######### LEXER ##################################################################
 ##################################################################################
