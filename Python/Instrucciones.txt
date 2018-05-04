@@ -1,0 +1,402 @@
+
+Fecha: 3 de Mayo del 2018
+
+Creditos:
+	Juan Pablo Ferreira Rdz. 		A01251219
+	Osmar Alan Hernandez Sanchez 	A01244070
+	Obed Gonzalez Moreno 			A01382900
+	Luis Adrian Portes Santana		A00818171
+
+Redaccion de este documento:
+	Juan Pablo Ferreira Rdz.		A01251219
+
+
+Introduccion>
+
+	Este documento describe la manera de utilizar el programa de
+	nuestro proyecto para el curso de Metodos Numericos para 
+	Ingenieria en el semestre de Enero-Mayo del 2018. Primero,
+	se describe el procedimiento para poder correr nuestro programa
+	sin fallas, y despues se describe la forma de usarlo.
+
+
+Seccion 1> Especificaciones tecnicas y dependencias
+	
+	Lenguaje: Python (probado con versiones 2.7.12 y superior)
+	Sistema Operativo recomendado: OSX(Mac) o Linux
+	Librerias requeridas:
+		numpy
+		matplotlib
+	
+	Seccion 1.1> Instalacion de Pip
+	
+		Pip es un manejador de paquetes para Python. Nos servira
+		para instalar las dependencias del programa. En caso de no
+		contar con el, se puede instalar de la siguiente manera.
+		
+		-- Mac --
+		
+		Para instalar las librerias requeridas por nuestro programa,
+		se recomienda utilizar Pip. Para instalarlas en Mac, se puede
+		instalar mediante easy_install en la terminal con el comando
+		
+			sudo easy_install pip
+			
+		o usando Homebrew, con el comando
+		
+			brew install python
+		
+		el cual instala Python junto con Pip y otras herramientas de
+		Python.
+		
+		-- Linux --
+			
+		En Linux, Pip se puede instalar con el comando
+		
+			sudo apt install python-pip python-dev build-essential 
+			
+	Seccion 1.2> Instalacion de paquetes
+		
+		Una vez instalado Pip, se pueden usar los comandos
+		
+			pip install numpy
+			pip install matplotlib
+			
+		para instalar los paquetes requeridos por nuestro programa.
+		
+		OJO: Es posible que al instalar alguna de los paquetes, el
+		sistema indique que es necesario instalar algun otro paquete
+		para que este funcione. En caso de ser asi, por favor siga las
+		instrucciones que su maquina le indique.
+		
+		
+Seccion 2> Uso del programa
+
+	Nuestro programa esta disenado para funcionar desde la terminal.
+	El programa *no cuenta con un menu interactivo*. En vez, se
+	utiliza como un comando en la terminal. Para utilizarlo, se debe
+	ubicar en el directorio donde se encuentra el archivo 'metodo'.
+	Para correrlo, llame al programa como comando ('./metodo'), 
+	seguido de la accion y el metodo que se quieren realizar.
+	
+		$ ./metodo [accion] [metodo] [parametros...]
+		
+	El programa desplegara el resultado del metodo. En caso de utilizar
+	un metodo de ajuste de curvas o interpolacion, se abrira una nueva
+	ventana con la grafica de los puntos ingresados y la curva de la
+	funcion resultante del metodo.
+	
+	Seccion 1.1> Introduccion de funciones
+	
+		En los metodos que reciben una funcion (integracion numerica,
+		calculo de raices), el programa recibe la funcion como una
+		cadena de caracteres (string). Para asegurarse de que funcione
+		como debido, por favor encierre su funcion con comillas. 
+		
+		El interpretador de funciones de nuestro programa puede inden-
+		tificar expresiones que utilicen ecuaciones aritmeticas y expo-
+		nentes. Puede recibir la constante de Euler (e), la variable x,
+		y numeros naturales (enteros no negativos).
+		
+			 Validos:						Ejemplos:
+			 	Numeros naturales 			'0', '3', '10'
+			 	Variable x					'x'
+			 	Constante e					'e'
+			 	Suma						'x+3', '3+(x+5)'
+			 	Resta						'4-x', 'e-(5+2-3)'
+			 	Multiplicacion				'2*x', '4*(4+x)'
+			 	Division					'x/4', 'x/(5+3*x)'
+			 	Exponentes					'x^2', 'e^x', 'e^(x+2)'
+			 	Combinaciones				'(x+2)^(4/x)', '(5*x)-e^4'
+			 	
+			 NO Validos						Alternativas:
+			 	Numeros negativos			'0-x' en vez a -x
+			 	Numeros decimales			'5/2' en vez de 2.5
+			 	Logaritmos					--
+			 	Funciones trigonometricas	--
+			 	Pi							'355/113' se acerca a Pi 
+	
+Seccion 3> Acciones y metodos
+
+	El primer parametro que se le pasa a nuestro programa es la accion
+	que se quiere realizar, seguido de el metodo a utilizar. Estas
+	son las acciones posibles y los metodos soportados para cada una:
+	
+		Accion 1> Integrar 
+		
+			Metodo 1.1> Trapezoidal
+				Uso:
+					
+					$ ./metodo integrar trapezoidal [f] [a] [b] [n]
+					
+				Donde [f] es la funcion a integrar, [a] es el limite
+				inferior a integrar, [b] es el limite superior, y [n]
+				es el numero de intervalos a usar.
+				
+				Ejemplos:
+					
+					$ ./metodo integrar trapezoidal 'x^2' 0 4 5
+					$ ./metodo integrar trapezoidal '2*e^(x-2)' 1 3 10
+					
+			
+			Metodo 1.2> Simpson
+				Uso:
+				
+					$ ./metodo integrar simpson [f] [a] [b] [n]
+					
+				Donde [f] es la funcion a integrar, [a] es el limite
+				inferior a integrar, [b] es el limite superior, y [n]
+				es el numero de intervalos a usar.
+				
+				Ejemplos:
+					
+					$ ./metodo integrar simpson 'x^2' 0 4 5
+					$ ./metodo integrar simpson '2*e^(x-2)' 1 3 10
+				
+		Accion 2> Raices
+		
+			Metodo 2.1> Biseccion
+				Uso:
+					
+					$ ./metodo raices biseccion [f] [a] [b] [n] [t]
+					
+					
+				Donde [f] es la funcion a encontrar su raiz, [a] es 
+				el limite inferior a buscar, [b] es el limite superior, 
+				[n] el numero de iteraciones a hacer, y [t] es el umbral
+				del error para detener el calculo. El programa regresara
+				el resultado cuando las iteraciones se terminen o el
+				umbral se cumpla, lo que pase primero.
+				
+				Ejemplos:
+				
+					$ ./metodo raices biseccion 'x^2-1' 0 1 10 3.5
+					$ ./metodo raices biseccion '2*(x-2)' -1 3 15 0
+					
+			Metodo 2.2> Secante
+				Uso:
+					
+					$ ./metodo raices secante [f] [a] [b] [n]
+					
+					
+				Donde [f] es la funcion a encontrar su raiz, [a] es 
+				el limite inferior a buscar, [b] es el limite superior, 
+				y [n] es el numero de iteraciones a hacer. 
+				
+				Ejemplos:
+				
+					$ ./metodo raices secante 'x^2-1' 0 1 10 
+					$ ./metodo raices secante '2*(x-2)' -1 3 15 
+				
+			Metodo 2.3> Newton-Raphson ('newton_raphson')
+				Uso:
+					
+					$ ./metodo raices newton_raphson [f] [a] [n] [t]
+					
+				Donde [f] es la funcion a encontrar su raiz, [a] es 
+				el limite a buscar, [n] es el numero de iteraciones a 
+				hacer, y [t] es el umbral error para detener el calculo. 
+				El programa regresara el resultado cuando las itera-
+				ciones se terminen o el se cumpla, lo que pase primero.
+				
+				Ejemplos:
+				
+					$ ./metodo raices newton_raphson 'x^2-1' 1 10 3.5
+					$ ./metodo raices newton_raphson '2*(x-2)' -1 15 0
+			
+		Accion 3> Resolver matrices
+		
+			Metodo 3.1> Montante
+				Uso:
+					
+					$ ./metodo resolver montante
+					
+				Al introducir este comando, el programa desplegara
+				la instruccion de ingresar la matriz. Por favor intro-
+				duzca los valores de la matriz fila por fila, separadas
+				por espacios. El resultado se despliegara como un vector
+				con los valores de cada una de sus variables.
+				
+				Ejemplo:
+				
+					$ ./metodo resolver montante
+					
+					>Ingrese los valores de las matrices
+					>fila for fila, separados con espacios.
+					>Ingrese una linea en blanco para terminar.
+					1 2 3 14
+					3 2 1 10
+					5 0 1 8
+					
+					>Valores de sus variables:
+					>[1.0, 2.0, 3.0]
+
+			Metodo 3.2> Gauss-Jordan
+				Uso:
+					
+					$ ./metodo resolver gauss
+					
+				El programa le indicara las instrucciones a seguir para
+				introducir la matriz de valores, fila por fila seguida 
+				de el vector de resultados de la matriz. Por favor
+				ingrese sus valores separados por espacios.
+				
+				Ejemplo:
+					
+					$ ./metodo resolver gauss
+
+					>Dame el numero de ecuaciones
+					3
+					>Dame la matriz de ecuaciones
+					1 2 3
+					3 2 1
+					5 0 1
+					>Ahora dame el vector de los resultados
+					14 10 8
+					>Tu matriz es: 
+					>1	2	3	14	
+					>3	2	1	10	
+					>5	0	1	8	
+
+					>El resultado es:	1	2	3	
+					 
+		Accion 4> Regresion
+		
+			Metodo 4.1> Regresion Lineal
+				Uso:
+				
+					$ ./metodo regresion lineal [n]
+					
+				Donde [n] es el numero de puntos a ingresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos, separadas por espacios. Al
+				terminar, el programa regresara la funcion (el modelo)
+				resultante, y abrira una nueva ventana con la grafica
+				de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo regresion lineal 4
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 2
+					1: 2 3.4
+					2: 3 5
+					3: 4 3
+					>Resultado: f(x) = (2.2+(0.46*x))
+			
+			Metodo 4.2> Regresion Potencial
+				Uso:
+				
+					$ ./metodo regresion potencial [n]
+					
+				Donde [n] es el numero de puntos a ingresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos, separadas por espacios. Al
+				terminar, el programa regresara la funcion (el modelo)
+				resultante, y abrira una nueva ventana con la grafica
+				de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo regresion potencial 4
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 2
+					1: 2 3.4
+					2: 3 5
+					3: 4 3
+					>Resultado: f(x) = (e^0.81563390208*x^0.428701739396)
+					
+			Metodo 4.3> Regresion Exponencial
+				Uso:
+				
+					$ ./metodo regresion exponencial [n]
+					
+				Donde [n] es el numero de puntos a ingresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos, separadas por espacios. Al
+				terminar, el programa regresara la funcion (el modelo)
+				resultante, y abrira una nueva ventana con la grafica
+				de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo regresion exponencial 4
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 2
+					1: 2 3.4
+					2: 3 5
+					3: 4 3
+					>Resultado: f(x) = f(x) =(e^0.755728752037*e^(0.160205780514*x))
+					
+			Metodo 4.4> Regresion Polinomial
+				Uso:
+				
+					$ ./metodo regresion polinomial [o]
+					
+				Donde [o] es el orden del poligono a regresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos (o+1 puntos), separadas por 
+				espacios. Al terminar, el programa regresara la 
+				funcion (el modelo) resultante, y abrira una nueva 
+				ventana con la grafica de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo regresion polinomial 4
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 2
+					1: 2 3.4
+					2: 3 5
+					3: 4 3
+					4: 5 5
+					>Resultado: f(x) = [...]
+					
+		Accion 5> Interpolar
+			
+			Metodo 5.1> Lagrange
+				Uso:
+				
+					$ ./metodo interpolar lagrange [n]
+					
+				Donde [n] es el numero de puntos a ingresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos, separadas por espacios. Al
+				terminar, el programa regresara la funcion (el modelo)
+				resultante, y abrira una nueva ventana con la grafica
+				de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo interpolar lagrange 3
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 3
+					1: 4 5
+					2: 5 2
+					>Resultado: f(x) = [...]
+					
+			Metodo 5.2> Newton
+				Uso:
+				
+					$ ./metodo interpolar newton [n]
+					
+				Donde [n] es el numero de puntos a ingresar. El
+				programa le mostrara instrucciones para ingresar las
+				coordenadas de sus puntos, separadas por espacios. Al
+				terminar, el programa regresara la funcion (el modelo)
+				resultante, y abrira una nueva ventana con la grafica
+				de sus puntos y el modelo.
+				
+				Ejemplo:
+				
+					$ ./metodo interpolar newton 3
+					
+					>Ingrese los pares de valores (x y):
+					0: 1 3
+					1: 4 5
+					2: 5 2
+					>Resultado: f(x) = [...]

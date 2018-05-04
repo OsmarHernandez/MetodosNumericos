@@ -311,9 +311,12 @@ def samesign(a,b):
 
 # Biseccion
 def bisect(func, low, high, iterations, threshold=0):
-    assert not samesign(func(low), func(high))
+    if samesign(func(low), func(high)):
+        return 'Ambos limites tienen el mismo signo'
 
     for i in range(iterations):
+        if (low+high) == 0:
+            return 'Error: El error estimado divide entre cero'
         midpoint = (low + high) / 2.0
         ea = ((low-high)/(low+high))*100
         if ea < threshold:
@@ -326,7 +329,7 @@ def bisect(func, low, high, iterations, threshold=0):
 
 # Secante
 def secante(f, ai, a, n):
-    for i in range(a, n+1):
+    for i in range(int(a), n+1):
         af = a - f(a)*((ai-a)/(f(ai)-f(a)))
         ai = a
         a = af
@@ -580,31 +583,32 @@ def menu_raices():
         low = float(sys.argv[4])
         high = float(sys.argv[5])
         iterations = int(sys.argv[6])
-        print bisect(f,low,high,iterations)
+        print secante(f,low,high,iterations)
 
     elif sys.argv[2] == 'newton_raphson':
         f = parse(sys.argv[3])
         low = float(sys.argv[4])
-        iterations = int(sys.argv[6])
-        threshold = float(sys.argv[7])
+        iterations = int(sys.argv[5])
+        threshold = float(sys.argv[6])
         print newton_raphson(f,low,iterations,threshold)
 
 def menu_resolver():
     if sys.argv[2] == 'montante':
         mat = []
         print 'Ingrese los valores de las matrices'
-        print 'fila for fila, separados con espacios'
+        print 'fila for fila, separados con espacios.'
+        print 'Ingrese una linea en blanco para terminar.'
         inp = str.split(raw_input())
         while(len(inp)):
             mat.append([float(e) for e in inp])
             inp = str.split(raw_input())
         if(len(mat) == 0 or len(mat) != len(mat[0])-1):
-            print 'Matiz invalida'
+            print 'Matiz invalida. Ingrese matriz de n filas y n+1 columnas.'
             return
+        print 'Valores de sus variables:'
         print montante(mat)
 
     elif sys.argv[2] == 'gauss':
-        print 'gauss'
         gauss()
 
 def menu_ajustar():
@@ -619,7 +623,7 @@ def menu_ajustar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = regresion_lineal(ax,ay)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -638,7 +642,7 @@ def menu_ajustar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = regresion_potencial(ax,ay)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -657,7 +661,7 @@ def menu_ajustar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = regresion_exponencial(ax,ay)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -676,7 +680,7 @@ def menu_ajustar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = regresion_polinomial(ax,ay,n)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -696,7 +700,7 @@ def menu_interpolar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = lagrange(ax,ay)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -715,7 +719,7 @@ def menu_interpolar():
             ax.append(float(p[0]))
             ay.append(float(p[1]))
         f = newton(ax,ay)
-        print 'Resultado: ' + f()
+        print 'Resultado: f(x) = ' + f()
         plt.plot(ax, ay, 'ro')
         a = min(ax)-1
         b = max(ax)+1
@@ -724,7 +728,7 @@ def menu_interpolar():
         plt.show()
 
 def menu_error():
-    print 'Error de sintaxis'
+    print 'Accion no existe'
 
 def switch_menu(st):
     return {
@@ -740,7 +744,10 @@ def switch_menu(st):
 ############################### MAIN #############################
 def main():
     menu = switch_menu(sys.argv[1])
-    menu()
+    try:
+        menu()
+    except:
+        print 'Por favor, revise que el formato y los valores introducidos son validos.'
 
 if __name__ == '__main__':
     main()
